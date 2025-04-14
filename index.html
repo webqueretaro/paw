@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PWA Base Querétaro</title>
+  <link rel="manifest" href="/paw/manifest.json">
+  <!-- Soporte para iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="/paw/icons/icon-512.png">
+  <link rel="stylesheet" href="/paw/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>¡PWA Base en Construcción!</h1>
+    <p>Esta es una PWA de prueba para Querétaro. Instálala para verificar que funciona.</p>
+  </div>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/paw/service-worker.js')
+          .then(registration => {
+            console.log('Service Worker registrado:', registration);
+          })
+          .catch(error => {
+            console.log('Error al registrar Service Worker:', error);
+          });
+      });
+    }
+  </script>
+</body>
+</html>
