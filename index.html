@@ -18,7 +18,7 @@
     <button id="installBtn" onclick="promptInstall()" style="background: #007bff; color: white; display: none;">Instalar ahora</button>
     <p id="installText">Para instalar, toca los tres puntos (⋮) en el navegador y selecciona "Agregar a la pantalla de inicio".</p>
     <div id="update" style="display: none; background: #007bff; color: white; padding: 15px; margin: 10px; text-align: center; border-radius: 5px;">
-      ¡Nuevas ofertas disponibles! <button onclick="updateApp()" style="background: white; color: #007bff; border: none; padding: 5px 10px; margin-left: 10px;">Actualizar</button>
+      ¡Nuevas ofertas disponibles! <button onclick="updateApp()" style="background: white; color: #007bff; border: none; padding: 5px 10px; margin-left: 10px;">Actualizar ahora</button>
     </div>
   </div>
   <script>
@@ -70,10 +70,17 @@
               const newWorker = registration.installing;
               newWorker.addEventListener('statechange', () => {
                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  // Mostrar notificación
                   document.getElementById('update').style.display = 'block';
+                  // Forzar recarga tras 5 segundos
+                  setTimeout(() => {
+                    updateApp();
+                  }, 5000);
                 }
               });
             });
+            // Verificar actualizaciones al cargar
+            registration.update();
           })
           .catch(error => {
             console.log('Error al registrar Service Worker:', error);
