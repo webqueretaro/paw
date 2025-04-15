@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PWA Base Querétaro</title>
   <link rel="manifest" href="/paw/manifest.json">
-  <!-- Soporte para iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="apple-touch-icon" href="/paw/icons/icon-512.png">
@@ -13,10 +12,28 @@
 </head>
 <body>
   <div class="container">
-    <h1>¡PWA Base en Construcción!</h1>
+    <h1>¡Estamos en prueba!</h1>
     <p>Esta es una PWA de prueba para Querétaro. Instálala para verificar que funciona.</p>
+    <button onclick="promptInstall()">Instalar ahora</button>
+    <p>Si no ves el botón, toca los tres puntos (⋮) en el navegador y selecciona "Agregar a la pantalla de inicio".</p>
   </div>
   <script>
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.querySelector('button').style.display = 'block';
+    });
+    function promptInstall() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(choice => {
+          deferredPrompt = null;
+        });
+      } else {
+        alert('Usa el menú del navegador (⋮) y selecciona "Agregar a la pantalla de inicio".');
+      }
+    }
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/paw/service-worker.js')
