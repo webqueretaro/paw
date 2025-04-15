@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pwa-queretaro-v4';
+const CACHE_NAME = 'pwa-queretaro-v7';
 const urlsToCache = [
   '/paw/',
   '/paw/index.html',
@@ -14,15 +14,7 @@ self.addEventListener('install', event => {
       .then(cache => {
         return cache.addAll(urlsToCache);
       })
-  );
-});
-
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request, { ignoreSearch: true })
-      .then(response => {
-        return response || fetch(event.request);
-      })
+      .then(() => self.skipWaiting()) // Forzar activación inmediata
   );
 });
 
@@ -38,5 +30,24 @@ self.addEventListener('activate', event => {
         })
       );
     })
+    .then(() => self.clients.claim()) // Tomar control de clientes inmediatamente
+  );
+});
+
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request, { ignoreSearch: true })
+      .then(response => {
+        // Servir desde caché si existe, o buscar en red
+        return response || fetch(event.request).then(networkResponse => {
+          // Cachear nuevas respuestas
+          if (event.request.method === 'GET') {
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, networkResponse.clone());
+            });
+          }
+          return networkResponse;
+        });
+      })
   );
 });
