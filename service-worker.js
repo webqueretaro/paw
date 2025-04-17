@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pwa-queretaro-v12';
+const CACHE_NAME = 'pwa-queretaro-v13';
 const urlsToCache = [
   '/paw/',
   '/paw/index.html',
@@ -8,6 +8,7 @@ const urlsToCache = [
   '/paw/icons/icon-512.png',
   '/paw/ofertas1.png',
   '/paw/ofertas2.png',
+  '/paw/ofertas3.png',
   '/paw/ofertas4.png'
 ];
 
