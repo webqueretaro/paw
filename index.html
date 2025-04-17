@@ -58,6 +58,13 @@
     }
 
     function updateApp() {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistration().then(registration => {
+          if (registration && registration.waiting) {
+            registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+          }
+        });
+      }
       window.location.reload();
     }
 
