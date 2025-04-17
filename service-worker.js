@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pwa-queretaro-v9';
+const CACHE_NAME = 'pwa-queretaro-v10';
 const urlsToCache = [
   '/paw/',
   '/paw/index.html',
@@ -22,19 +22,22 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
+  const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
-        cacheNames.map(cache => {
-          if (cache !== CACHE_NAME) {
-            console.log('Eliminando cache antiguo:', cache);
-            return caches.delete(cache);
+        cacheNames.map(cacheName => {
+          if (!cacheWhitelist.includes(cacheName)) {
+            console.log('Eliminando cache antiguo:', cacheName);
+            return caches.delete(cacheName);
           }
         })
       );
+    }).then(() => {
+      console.log('Service Worker activado, forzando actualización');
+      self.clients.claim();
     })
   );
-  self.clients.claim();
 });
 
 self.addEventListener('fetch', event => {
@@ -44,4 +47,10 @@ self.addEventListener('fetch', event => {
         return response || fetch(event.request);
       })
   );
+});
+
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
