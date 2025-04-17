@@ -15,10 +15,17 @@
     </div>
     <button onclick="exitApp()" style="background: #dc3545; color: white; padding: 12px 24px; border: none; border-radius: 5px;">Salir</button>
   </div>
+  <div id="exitMessage" style="display: none; text-align: center; padding: 20px;">
+    <h2>¡Gracias por visitar!</h2>
+    <p>Cierra esta ventana desde tus apps recientes para ver nuevas ofertas la próxima vez.</p>
+  </div>
   <script>
     function exitApp() {
-      alert('¡Gracias por visitar! Para ver nuevas ofertas, cierra esta ventana desde tus apps recientes.');
-      window.location.href = '/paw/';
+      document.querySelector('.container').style.display = 'none';
+      document.getElementById('exitMessage').style.display = 'block';
+      setTimeout(() => {
+        window.location.href = '/paw/';
+      }, 3000);
     }
   </script>
 </body>
