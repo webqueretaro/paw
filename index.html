@@ -70,16 +70,13 @@
               const newWorker = registration.installing;
               newWorker.addEventListener('statechange', () => {
                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  // Mostrar notificación
                   document.getElementById('update').style.display = 'block';
-                  // Forzar recarga tras 5 segundos
                   setTimeout(() => {
                     updateApp();
-                  }, 5000);
+                  }, 3000);
                 }
               });
             });
-            // Verificar actualizaciones al cargar
             registration.update();
           })
           .catch(error => {
