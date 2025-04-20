@@ -1,16 +1,15 @@
 {
-    "name": "PWA Querétaro",
-    "short_name": "PWA QRO",
-    "description": "PWA base para pruebas en Querétaro",
-    "start_url": "/paw/index.html",
-    "display": "standalone",
-    "background_color": "#f0f0f0",
-    "theme_color": "#007bff",
-    "icons": [
-      {
-        "src": "/paw/icons/icon-512.png",
-        "sizes": "512x512",
-        "type": "image/png"
-      }
-    ]
-  }
+  "name": "Farmacia Querétaro",
+  "short_name": "Farmacia QRO",
+  "start_url": "/paw/home.html",
+  "display": "standalone",
+  "background_color": "#ACF7F8",
+  "theme_color": "#ACF7F8",
+  "icons": [
+    {
+      "src": "/paw/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
