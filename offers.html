@@ -16,22 +16,12 @@
       <img src="/paw/ofertas3.png" alt="Ofertas 3" style="width: 100%; max-width: 100%; margin-bottom: 20px;">
       <img src="/paw/ofertas4.png" alt="Ofertas 4" style="width: 100%; max-width: 100%; margin-bottom: 20px;">
       <img src="/paw/ofertas5.png" alt="Ofertas 5" style="width: 100%; max-width: 100%; margin-bottom: 20px;">
-      <img src="/paw/ofertas6.png" alt="Ofertas 6" style="width: 100%; max-width: 100%;">
+      <img src="/paw/ofertas6.png" alt="Ofertas 6" style="width: 100%; max-width: 100%; margin-bottom: 20px;">
+      <img src="/paw/ofertas7.png" alt="Ofertas 7" style="width: 100%; max-width: 100%; margin-bottom: 20px;">
+      <img src="/paw/ofertas8.png" alt="Ofertas 8" style="width: 100%; max-width: 100%; margin-bottom: 20px;">
+      <img src="/paw/ofertas9.png" alt="Ofertas 9" style="width: 100%; max-width: 100%;">
     </div>
-    <button onclick="exitApp()" style="background: #dc3545; color: white; padding: 12px 24px; border: none; border-radius: 5px; margin-top: 20px;">Salir</button>
+    <button onclick="window.location.href='/paw/index.html'" style="background: #dc3545; color: white; padding: 12px 24px; border: none; border-radius: 5px; margin-top: 20px;">Salir</button>
   </div>
-  <div id="exitMessage" style="display: none; text-align: center; padding: 20px;">
-    <h2>¡Gracias por visitar!</h2>
-    <p>Para recibir nuevas ofertas, deberás cerrar completamente la aplicación.</p>
-  </div>
-  <script>
-    function exitApp() {
-      document.querySelector('.container').style.display = 'none';
-      document.getElementById('exitMessage').style.display = 'block';
-      setTimeout(() => {
-        window.location.href = '/paw/';
-      }, 10000);
-    }
-  </script>
 </body>
 </html>
