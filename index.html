@@ -5,18 +5,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Farmacia Querétaro</title>
   <link rel="manifest" href="/paw/manifest.json">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#ACF7F8">
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    button {
+      background-color: #007BFF;
+      color: white;
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    p {
+      font-size: 18px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Bienvenido a Farmacia Querétaro</h1>
-  <button onclick="window.location.href='/paw/offers.html'">Entrar</button>
+  <h1>Farmacia Querétaro</h1>
+  <p>Te invitamos a descargar la app para ver las ofertas</p>
+  <button id="installButton">Descargar app</button>
   <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/paw/service-worker.js')
-          .then(reg => console.log('Service Worker registrado'))
-          .catch(err => console.log('Error al registrar Service Worker:', err));
-      });
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('installButton').style.display = 'block';
+    });
+
+    document.getElementById('installButton').addEventListener('click', () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          deferredPrompt = null;
+        });
+      }
+    });
+
+    window.addEventListener('appinstalled', () => {
+      document.getElementById('installButton').style.display = 'none';
+    });
+
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      window.location.href = '/paw/home.html';
     }
   </script>
 </body>
