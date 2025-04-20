@@ -2,6 +2,7 @@ const CACHE_NAME = 'pwa-queretaro-v16';
 const urlsToCache = [
   '/paw/',
   '/paw/index.html',
+  '/paw/home.html',
   '/paw/offers.html',
   '/paw/ofertas1.png',
   '/paw/ofertas2.png',
@@ -12,7 +13,8 @@ const urlsToCache = [
   '/paw/ofertas7.png',
   '/paw/ofertas8.png',
   '/paw/ofertas9.png',
-  '/paw/manifest.json'
+  '/paw/manifest.json',
+  '/paw/icon.png'
 ];
 
 self.addEventListener('install', event => {
