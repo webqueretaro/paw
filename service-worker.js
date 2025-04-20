@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pwa-queretaro-v14';
+const CACHE_NAME = 'pwa-queretaro-v15';
 const urlsToCache = [
   '/paw/',
   '/paw/index.html',
@@ -11,7 +11,10 @@ const urlsToCache = [
   '/paw/ofertas3.png',
   '/paw/ofertas4.png',
   '/paw/ofertas5.png',
-  '/paw/ofertas6.png'
+  '/paw/ofertas6.png',
+  '/paw/ofertas7.png',
+  '/paw/ofertas8.png',
+  '/paw/ofertas9.png'
 ];
 
 self.addEventListener('install', event => {
