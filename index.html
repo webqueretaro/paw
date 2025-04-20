@@ -3,92 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bienvenido a Farmacia Querétaro</title>
+  <title>Farmacia Querétaro</title>
   <link rel="manifest" href="/paw/manifest.json">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="apple-touch-icon" href="/paw/icons/icon-512.png">
-  <link rel="stylesheet" href="/paw/styles.css">
+  <meta name="theme-color" content="#ffffff">
 </head>
 <body>
-  <div class="container">
-    <h1>¡Bienvenido a tu farmacia!</h1>
-    <p>Descubre las mejores ofertas cada 15 días.</p>
-    <a href="/paw/offers.html"><button style="background: #28a745; color: white;">Entrar</button></a>
-    <button id="installBtn" onclick="promptInstall()" style="background: #007bff; color: white; display: none;">Instalar ahora</button>
-    <p id="installText">Para instalar, toca los tres puntos (⋮) en el navegador y selecciona "Agregar a la pantalla de inicio".</p>
-    <div id="update" style="display: none; background: #007bff; color: white; padding: 15px; margin: 10px; text-align: center; border-radius: 5px;">
-      ¡Nuevas ofertas disponibles! <button onclick="updateApp()" style="background: white; color: #007bff; border: none; padding: 5px 10px; margin-left: 10px;">Actualizar ahora</button>
-    </div>
-  </div>
+  <h1>Bienvenido a Farmacia Querétaro</h1>
+  <button onclick="window.location.href='/paw/offers.html'">Entrar</button>
   <script>
-    let deferredPrompt;
-    let isInstalled = false;
-
-    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
-      isInstalled = true;
-      document.getElementById('installBtn').style.display = 'none';
-      document.getElementById('installText').style.display = 'none';
-    }
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      if (!isInstalled) {
-        document.getElementById('installBtn').style.display = 'block';
-        document.getElementById('installText').style.display = 'block';
-      }
-    });
-
-    window.addEventListener('appinstalled', () => {
-      isInstalled = true;
-      document.getElementById('installBtn').style.display = 'none';
-      document.getElementById('installText').style.display = 'none';
-    });
-
-    function promptInstall() {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(choice => {
-          deferredPrompt = null;
-        });
-      } else {
-        alert('Usa el menú del navegador (⋮) y selecciona "Agregar a la pantalla de inicio".');
-      }
-    }
-
-    function updateApp() {
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistration().then(registration => {
-          if (registration && registration.waiting) {
-            registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-          }
-        });
-      }
-      window.location.reload();
-    }
-
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/paw/service-worker.js')
-          .then(registration => {
-            console.log('Service Worker registrado:', registration);
-            registration.addEventListener('updatefound', () => {
-              const newWorker = registration.installing;
-              newWorker.addEventListener('statechange', () => {
-                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  document.getElementById('update').style.display = 'block';
-                  setTimeout(() => {
-                    updateApp();
-                  }, 3000);
-                }
-              });
-            });
-            registration.update();
-          })
-          .catch(error => {
-            console.log('Error al registrar Service Worker:', error);
-          });
+          .then(reg => console.log('Service Worker registrado'))
+          .catch(err => console.log('Error al registrar Service Worker:', err));
       });
     }
   </script>
