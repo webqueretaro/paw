@@ -28,7 +28,7 @@
       border-radius: 5px;
       cursor: pointer;
       transition: background-color 0.3s;
-      display: none; /* Oculto por defecto */
+      display: none;
     }
     button:hover {
       background-color: #0056b3;
@@ -46,21 +46,29 @@
       font-size: 16px;
       color: #555;
     }
+    #errorMessage {
+      font-size: 14px;
+      color: red;
+      display: none;
+    }
   </style>
 </head>
 <body>
   <h1>Farmacia Querétaro</h1>
   <p>Te invitamos a descargar la app para ver las ofertas</p>
-  <p id="interactionMessage">Toca la pantalla para continuar</p>
+  <p id="interactionMessage">Haz clic o toca la pantalla para continuar</p>
+  <p id="errorMessage">Error: No se pudo registrar el Service Worker. Intenta recargar la página.</p>
   <button id="installButton" disabled>Descargar app</button>
   <script>
+    let serviceWorkerRegistered = false;
+
     // Registrar Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/paw/service-worker.js')
           .then(reg => {
-            console.log('Service Worker registrado con éxito:', reg);
-            // Verificar estado del Service Worker
+            console.log('Service Worker registrado con éxito:', reg.scope);
+            serviceWorkerRegistered = true;
             if (reg.installing) {
               console.log('Service Worker instalándose');
             } else if (reg.waiting) {
@@ -69,10 +77,15 @@
               console.log('Service Worker activo');
             }
           })
-          .catch(err => console.error('Error al registrar Service Worker:', err));
+          .catch(err => {
+            console.error('Error al registrar Service Worker:', err.message);
+            document.getElementById('errorMessage').style.display = 'block';
+          });
       });
     } else {
       console.error('Service Workers no soportados en este navegador');
+      document.getElementById('errorMessage').style.display = 'block';
+      document.getElementById('errorMessage').textContent = 'Error: Este navegador no soporta Service Workers.';
     }
 
     let deferredPrompt;
@@ -84,27 +97,37 @@
       console.log('Evento beforeinstallprompt disparado');
       e.preventDefault();
       deferredPrompt = e;
-      interactionMessage.style.display = 'none';
-      installButton.style.display = 'block';
-      installButton.disabled = false; // Habilitar botón
+      if (serviceWorkerRegistered) {
+        interactionMessage.style.display = 'none';
+        installButton.style.display = 'block';
+        installButton.disabled = false;
+      } else {
+        document.getElementById('errorMessage').style.display = 'block';
+      }
     });
 
     // Manejar clic en el botón
-    installButton.addEventListener('click', () => {
+    installButton.addEventListener('click', async () => {
       if (deferredPrompt) {
         console.log('Solicitando instalación de la PWA');
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then((choiceResult) => {
-          if (choiceResult.outcome === 'accepted') {
+        try {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          console.log(`Resultado de la instalación: ${outcome}`);
+          if (outcome === 'accepted') {
             console.log('Usuario aceptó instalar la PWA');
           } else {
             console.log('Usuario rechazó instalar la PWA');
           }
           deferredPrompt = null;
           installButton.style.display = 'none';
-        });
+        } catch (err) {
+          console.error('Error durante la instalación:', err.message);
+          document.getElementById('errorMessage').style.display = 'block';
+          document.getElementById('errorMessage').textContent = 'Error: No se pudo instalar la PWA.';
+        }
       } else {
-        console.log('No se puede instalar: deferredPrompt no disponible');
+        console.error('No se puede instalar: deferredPrompt no disponible');
       }
     });
 
@@ -112,6 +135,7 @@
     window.addEventListener('appinstalled', () => {
       console.log('PWA instalada con éxito');
       installButton.style.display = 'none';
+      deferredPrompt = null;
     });
 
     // Redirigir si está instalada
