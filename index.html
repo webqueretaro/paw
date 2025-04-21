@@ -28,46 +28,103 @@
       border-radius: 5px;
       cursor: pointer;
       transition: background-color 0.3s;
+      display: none; /* Oculto por defecto */
     }
     button:hover {
       background-color: #0056b3;
+    }
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
     }
     p {
       font-size: 18px;
       color: #333;
       margin-bottom: 20px;
     }
+    #interactionMessage {
+      font-size: 16px;
+      color: #555;
+    }
   </style>
 </head>
 <body>
   <h1>Farmacia Querétaro</h1>
   <p>Te invitamos a descargar la app para ver las ofertas</p>
-  <button id="installButton">Descargar app</button>
+  <p id="interactionMessage">Toca la pantalla para continuar</p>
+  <button id="installButton" disabled>Descargar app</button>
   <script>
-    let deferredPrompt;
+    // Registrar Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/paw/service-worker.js')
+          .then(reg => {
+            console.log('Service Worker registrado con éxito:', reg);
+            // Verificar estado del Service Worker
+            if (reg.installing) {
+              console.log('Service Worker instalándose');
+            } else if (reg.waiting) {
+              console.log('Service Worker esperando');
+            } else if (reg.active) {
+              console.log('Service Worker activo');
+            }
+          })
+          .catch(err => console.error('Error al registrar Service Worker:', err));
+      });
+    } else {
+      console.error('Service Workers no soportados en este navegador');
+    }
 
+    let deferredPrompt;
+    const installButton = document.getElementById('installButton');
+    const interactionMessage = document.getElementById('interactionMessage');
+
+    // Manejar beforeinstallprompt
     window.addEventListener('beforeinstallprompt', (e) => {
+      console.log('Evento beforeinstallprompt disparado');
       e.preventDefault();
       deferredPrompt = e;
-      document.getElementById('installButton').style.display = 'block';
+      interactionMessage.style.display = 'none';
+      installButton.style.display = 'block';
+      installButton.disabled = false; // Habilitar botón
     });
 
-    document.getElementById('installButton').addEventListener('click', () => {
+    // Manejar clic en el botón
+    installButton.addEventListener('click', () => {
       if (deferredPrompt) {
+        console.log('Solicitando instalación de la PWA');
         deferredPrompt.prompt();
         deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('Usuario aceptó instalar la PWA');
+          } else {
+            console.log('Usuario rechazó instalar la PWA');
+          }
           deferredPrompt = null;
+          installButton.style.display = 'none';
         });
+      } else {
+        console.log('No se puede instalar: deferredPrompt no disponible');
       }
     });
 
+    // Ocultar botón tras instalación
     window.addEventListener('appinstalled', () => {
-      document.getElementById('installButton').style.display = 'none';
+      console.log('PWA instalada con éxito');
+      installButton.style.display = 'none';
     });
 
+    // Redirigir si está instalada
     if (window.matchMedia('(display-mode: standalone)').matches) {
+      console.log('PWA ya instalada, redirigiendo a home.html');
       window.location.href = '/paw/home.html';
     }
+
+    // Fomentar interacción
+    document.addEventListener('click', () => {
+      console.log('Interacción detectada');
+      interactionMessage.style.display = 'none';
+    }, { once: true });
   </script>
 </body>
 </html>
