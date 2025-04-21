@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pwa-queretaro-v18';
+const CACHE_NAME = 'pwa-queretaro-v19';
 const urlsToCache = [
   '/paw/',
   '/paw/index.html',
