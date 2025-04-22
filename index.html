@@ -51,6 +51,11 @@
       color: red;
       display: none;
     }
+    #statusMessage {
+      font-size: 14px;
+      color: blue;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -58,6 +63,7 @@
   <p>Te invitamos a descargar la app para ver las ofertas</p>
   <p id="interactionMessage">Haz clic o toca la pantalla para continuar</p>
   <p id="errorMessage">Error: No se pudo registrar el Service Worker. Intenta recargar la página.</p>
+  <p id="statusMessage"></p>
   <button id="installButton">Descargar app</button>
   <script>
     // Registrar Service Worker
@@ -83,17 +89,20 @@
     let deferredPrompt;
     const installButton = document.getElementById('installButton');
     const interactionMessage = document.getElementById('interactionMessage');
+    const statusMessage = document.getElementById('statusMessage');
 
     // Mostrar botón inicialmente para depurar
     installButton.style.display = 'block';
 
-    // Manejar beforeinstallprompt
+    // Verificar criterios de instalación
     window.addEventListener('beforeinstallprompt', (e) => {
       console.log('Evento beforeinstallprompt disparado');
       e.preventDefault();
       deferredPrompt = e;
       interactionMessage.style.display = 'none';
       installButton.disabled = false;
+      statusMessage.style.display = 'block';
+      statusMessage.textContent = 'Listo para instalar';
     });
 
     // Manejar clic en el botón
@@ -106,8 +115,12 @@
           console.log(`Resultado de la instalación: ${outcome}`);
           if (outcome === 'accepted') {
             console.log('Usuario aceptó instalar la PWA');
+            statusMessage.style.display = 'block';
+            statusMessage.textContent = 'PWA instalada con éxito';
           } else {
             console.log('Usuario rechazó instalar la PWA');
+            statusMessage.style.display = 'block';
+            statusMessage.textContent = 'Instalación cancelada';
           }
           deferredPrompt = null;
           installButton.style.display = 'none';
@@ -128,6 +141,8 @@
       console.log('PWA instalada con éxito');
       installButton.style.display = 'none';
       deferredPrompt = null;
+      statusMessage.style.display = 'block';
+      statusMessage.textContent = 'PWA instalada con éxito';
     });
 
     // Redirigir si está instalada
@@ -141,6 +156,15 @@
       console.log('Interacción detectada');
       interactionMessage.style.display = 'none';
     }, { once: true });
+
+    // Verificar si beforeinstallprompt no se dispara
+    setTimeout(() => {
+      if (!deferredPrompt) {
+        console.log('beforeinstallprompt no se disparó después de 10 segundos');
+        statusMessage.style.display = 'block';
+        statusMessage.textContent = 'Esperando criterios de instalación...';
+      }
+    }, 10000);
   </script>
 </body>
 </html>
