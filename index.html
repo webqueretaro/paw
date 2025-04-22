@@ -63,9 +63,9 @@
     // Registrar Service Worker
     if ('serviceWorker' in navigator) {
       console.log('Intentando registrar Service Worker...');
-      navigator.serviceWorker.register('/paw/service-worker.js')
+      navigator.serviceWorker.register('/paw/service-worker.js', { scope: '/paw/' })
         .then(reg => {
-          console.log('Service1 Worker registrado con éxito:', reg.scope);
+          console.log('Service Worker registrado con éxito:', reg.scope);
           if (reg.installing) console.log('Service Worker instalándose');
           else if (reg.waiting) console.log('Service Worker esperando');
           else if (reg.active) console.log('Service Worker activo');
