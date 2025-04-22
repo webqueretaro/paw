@@ -8,6 +8,11 @@
   "icons": [
     {
       "src": "/paw/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/paw/icon.png",
       "sizes": "512x512",
       "type": "image/png"
     }
