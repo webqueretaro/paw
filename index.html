@@ -58,30 +58,22 @@
   <p>Te invitamos a descargar la app para ver las ofertas</p>
   <p id="interactionMessage">Haz clic o toca la pantalla para continuar</p>
   <p id="errorMessage">Error: No se pudo registrar el Service Worker. Intenta recargar la página.</p>
-  <button id="installButton" disabled>Descargar app</button>
+  <button id="installButton">Descargar app</button>
   <script>
-    let serviceWorkerRegistered = false;
-
     // Registrar Service Worker
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/paw/service-worker.js')
-          .then(reg => {
-            console.log('Service Worker registrado con éxito:', reg.scope);
-            serviceWorkerRegistered = true;
-            if (reg.installing) {
-              console.log('Service Worker instalándose');
-            } else if (reg.waiting) {
-              console.log('Service Worker esperando');
-            } else if (reg.active) {
-              console.log('Service Worker activo');
-            }
-          })
-          .catch(err => {
-            console.error('Error al registrar Service Worker:', err.message);
-            document.getElementById('errorMessage').style.display = 'block';
-          });
-      });
+      console.log('Intentando registrar Service Worker...');
+      navigator.serviceWorker.register('/paw/service-worker.js')
+        .then(reg => {
+          console.log('Service1 Worker registrado con éxito:', reg.scope);
+          if (reg.installing) console.log('Service Worker instalándose');
+          else if (reg.waiting) console.log('Service Worker esperando');
+          else if (reg.active) console.log('Service Worker activo');
+        })
+        .catch(err => {
+          console.error('Error al registrar Service Worker:', err.message);
+          document.getElementById('errorMessage').style.display = 'block';
+        });
     } else {
       console.error('Service Workers no soportados en este navegador');
       document.getElementById('errorMessage').style.display = 'block';
@@ -92,18 +84,16 @@
     const installButton = document.getElementById('installButton');
     const interactionMessage = document.getElementById('interactionMessage');
 
+    // Mostrar botón inicialmente para depurar
+    installButton.style.display = 'block';
+
     // Manejar beforeinstallprompt
     window.addEventListener('beforeinstallprompt', (e) => {
       console.log('Evento beforeinstallprompt disparado');
       e.preventDefault();
       deferredPrompt = e;
-      if (serviceWorkerRegistered) {
-        interactionMessage.style.display = 'none';
-        installButton.style.display = 'block';
-        installButton.disabled = false;
-      } else {
-        document.getElementById('errorMessage').style.display = 'block';
-      }
+      interactionMessage.style.display = 'none';
+      installButton.disabled = false;
     });
 
     // Manejar clic en el botón
@@ -128,6 +118,8 @@
         }
       } else {
         console.error('No se puede instalar: deferredPrompt no disponible');
+        document.getElementById('errorMessage').style.display = 'block';
+        document.getElementById('errorMessage').textContent = 'Error: No se puede instalar. Verifica la consola.';
       }
     });
 
