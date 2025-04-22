@@ -69,7 +69,7 @@
     // Registrar Service Worker
     if ('serviceWorker' in navigator) {
       console.log('Intentando registrar Service Worker...');
-      navigator.serviceWorker.register('/paw/service-worker.js', { scope: '/paw/' })
+      navigator.serviceWorker.register('/paw/service-worker.js')
         .then(reg => {
           console.log('Service Worker registrado con éxito:', reg.scope);
           if (reg.installing) console.log('Service Worker instalándose');
