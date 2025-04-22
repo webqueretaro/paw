@@ -20,8 +20,12 @@ const urlsToCache = [
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
+      .then(cache => {
+        console.log('Cache abierto:', CACHE_NAME);
+        return cache.addAll(urlsToCache);
+      })
       .then(() => self.skipWaiting())
+      .catch(err => console.error('Error al cachear:', err))
   );
 });
 
@@ -40,5 +44,6 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => response || fetch(event.request))
+      .catch(err => console.error('Error al recuperar:', err))
   );
 });
